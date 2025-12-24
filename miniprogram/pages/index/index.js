@@ -14,12 +14,13 @@ function normalizeError(err) {
 Page({
   data: {
     accessToken: '',
-    statusText: '等待录音',
-    isRecording: false,
-    recordSeconds: 0,
+    status: 'idle', // 'idle', 'recording', 'review', 'playing', 'uploading'
+    duration: 0,
+    timeDisplay: '00:00',
     tempFilePath: '',
-    uploading: false,
-    fileId: ''
+    fileId: '',
+    toast: null,
+    statusText: '', // for accessibility or sub-status
   },
 
   onLoad() {
@@ -29,47 +30,59 @@ Page({
 
     this.recorderManager.onStart(() => {
       this.setData({
-        statusText: '正在录音',
-        isRecording: true,
-        recordSeconds: 0,
+        status: 'recording',
+        duration: 0,
+        timeDisplay: '00:00',
         tempFilePath: '',
         fileId: ''
       })
+      this._startTime = Date.now()
       this._startRecordTimer()
     })
 
     this.recorderManager.onStop((res) => {
       this._stopRecordTimer()
       const tempFilePath = res && res.tempFilePath ? res.tempFilePath : ''
+      
+      // 如果录音时间太短 (防止误触)
+      if (Date.now() - this._startTime < 500) {
+        this.resetState()
+        this.showToast('说话时间太短', 'warn')
+        return
+      }
+
       if (tempFilePath) {
         this.setData({
-          statusText: '录音已完成',
-          isRecording: false,
+          status: 'review',
           tempFilePath
         })
       } else {
-        this.resetState('录音失败')
+        this.resetState()
+        this.showToast('录音失败', 'warn')
       }
     })
 
     this.recorderManager.onError((err) => {
       this._stopRecordTimer()
-      this.resetState(`录音错误: ${normalizeError(err)}`)
-      wx.showToast({
-        title: '录音失败',
-        icon: 'none'
-      })
+      this.resetState()
+      this.showToast(`录音错误: ${normalizeError(err)}`, 'warn')
+    })
+
+    this.innerAudioContext.onPlay(() => {
+      this.setData({ status: 'playing' })
     })
 
     this.innerAudioContext.onEnded(() => {
-      this.setData({ statusText: '播放结束' })
+      this.setData({ status: 'review' })
+    })
+
+    this.innerAudioContext.onStop(() => {
+      this.setData({ status: 'review' })
     })
 
     this.innerAudioContext.onError((err) => {
-      wx.showToast({
-        title: `播放失败`,
-        icon: 'none'
-      })
+      this.showToast('播放失败', 'warn')
+      this.setData({ status: 'review' })
     })
   },
 
@@ -85,17 +98,24 @@ Page({
     this.setData({ accessToken: (e.detail.value || '').trim() })
   },
 
-  resetState(statusText = '等待录音') {
+  showToast(message, type = 'normal') {
+    this.setData({ toast: { message, type } })
+    setTimeout(() => {
+      this.setData({ toast: null })
+    }, 2000)
+  },
+
+  resetState() {
     if (this.data.tempFilePath) {
       this._clearTempFile(this.data.tempFilePath)
     }
     this.setData({
-      statusText,
-      isRecording: false,
-      recordSeconds: 0,
+      status: 'idle',
+      duration: 0,
+      timeDisplay: '00:00',
       tempFilePath: '',
-      uploading: false
     })
+    this._stopRecordTimer()
   },
 
   _clearTempFile(filePath) {
@@ -109,6 +129,7 @@ Page({
   },
 
   handleTouchStart() {
+    if (this.data.status !== 'idle') return
     this._ensureRecordPermission()
       .then(() => {
         this.startRecord()
@@ -119,13 +140,12 @@ Page({
   },
 
   handleTouchEnd() {
-    if (this.data.isRecording) {
+    if (this.data.status === 'recording') {
       this.stopRecord()
     }
   },
 
   startRecord() {
-    if (this.data.isRecording) return
     try {
       this.innerAudioContext.stop()
     } catch (e) {}
@@ -140,42 +160,33 @@ Page({
   },
 
   stopRecord() {
-    if (!this.data.isRecording) return
     this.recorderManager.stop()
   },
 
-  playRecord() {
-    if (!this.data.tempFilePath) return
-    this.innerAudioContext.src = this.data.tempFilePath
-    this.innerAudioContext.play()
-    this.setData({ statusText: '正在播放' })
+  handlePlay() {
+    if (this.data.status === 'playing') {
+      this.innerAudioContext.stop()
+    } else if (this.data.tempFilePath) {
+      this.innerAudioContext.src = this.data.tempFilePath
+      this.innerAudioContext.play()
+    }
   },
 
-  deleteRecord() {
-    wx.showModal({
-      title: '确认删除',
-      content: '确定要删除这段录音吗？',
-      success: (res) => {
-        if (res.confirm) {
-          this.resetState()
-        }
-      }
-    })
+  handleDelete() {
+    this.resetState()
+    this.showToast('录音已删除')
   },
 
-  uploadRecord() {
-    const { tempFilePath, accessToken, uploading } = this.data
-    if (!tempFilePath || !accessToken || uploading) {
-      if (!accessToken) {
-        wx.showToast({
-          title: '请输入 Access Token',
-          icon: 'none'
-        })
-      }
+  handleUpload() {
+    const { tempFilePath, accessToken, status } = this.data
+    if (!tempFilePath || status === 'uploading') return
+
+    if (!accessToken) {
+      this.showToast('请输入 Access Token', 'warn')
       return
     }
 
-    this.setData({ uploading: true, statusText: '正在上传' })
+    this.setData({ status: 'uploading' })
 
     wx.uploadFile({
       url: UPLOAD_URL,
@@ -187,10 +198,7 @@ Page({
       success: (res) => {
         const statusOk = res.statusCode >= 200 && res.statusCode < 300
         if (statusOk) {
-          wx.showToast({
-            title: '上传成功',
-            icon: 'success'
-          })
+          this.showToast('上传成功', 'success')
           let parsed
           try {
             parsed = JSON.parse(res.data)
@@ -198,32 +206,35 @@ Page({
           const fileId = parsed && parsed.data && parsed.data.id ? parsed.data.id : ''
           this.setData({ fileId })
           
-          // Successfully uploaded, reset state after a short delay
           setTimeout(() => {
-            this.resetState('上传成功')
+            this.resetState()
           }, 1500)
         } else {
-          wx.showToast({
-            title: '上传失败',
-            icon: 'none'
-          })
-          this.setData({ uploading: false, statusText: '上传失败' })
+          this.showToast('上传失败', 'warn')
+          this.setData({ status: 'review' })
         }
       },
       fail: (err) => {
-        wx.showToast({
-          title: '上传失败',
-          icon: 'none'
-        })
-        this.setData({ uploading: false, statusText: '上传错误' })
+        this.showToast('上传失败', 'warn')
+        this.setData({ status: 'review' })
       }
     })
+  },
+
+  formatTime(seconds) {
+    const m = Math.floor(seconds / 60);
+    const s = Math.floor(seconds % 60);
+    return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
   },
 
   _startRecordTimer() {
     this._stopRecordTimer()
     this._recordTimer = setInterval(() => {
-      this.setData({ recordSeconds: this.data.recordSeconds + 1 })
+      const duration = this.data.duration + 1
+      this.setData({ 
+        duration,
+        timeDisplay: this.formatTime(duration)
+      })
     }, 1000)
   },
 

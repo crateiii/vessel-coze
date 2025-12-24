@@ -3,10 +3,10 @@
     "pages/index/index"
   ],
   "window": {
-    "navigationBarTitleText": "语音上传示例",
-    "navigationBarBackgroundColor": "#ffffff",
+    "navigationBarTitleText": "语音助手",
+    "navigationBarBackgroundColor": "#f3f4f6",
     "navigationBarTextStyle": "black",
-    "backgroundColor": "#f6f7fb",
+    "backgroundColor": "#f3f4f6",
     "backgroundTextStyle": "light"
   },
   "permission": {
