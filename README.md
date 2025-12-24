@@ -11,21 +11,27 @@
 2. 进入首页，粘贴你的 `Access Token`（用于请求头 `Authorization: Bearer ...`）。
 3. 点击「开始录音」→「停止」→「上传」。
 
+## 关键目录结构
+
+为了让 `pages/index/index.js` 不承载业务逻辑，项目将业务能力抽离为独立模块：
+
+- `miniprogram/pages/index/index.js`：仅作为页面入口（`Page(require('./page'))`）
+- `miniprogram/pages/index/page.js`：页面状态与交互逻辑
+- `miniprogram/services/uploadService.js`：调用 Coze 上传 API 的逻辑
+- `miniprogram/services/tokenService.js`：Access Token 的本地存取
+
 ## 关键上传代码
 
-页面中上传逻辑与需求一致：
+上传逻辑位于 `miniprogram/services/uploadService.js`，页面侧只调用服务方法：
 
 ```js
-wx.uploadFile({
-  url: 'https://api.coze.cn/v1/files/upload',
-  filePath: tempFilePath,
-  name: 'file',
-  header: {
-    Authorization: `Bearer ${accessToken}`
-  },
-  success: (res) => {
-    const fileId = JSON.parse(res.data).data.id
+const { uploadAudioFile } = require('../../services/uploadService')
+
+uploadAudioFile(tempFilePath, accessToken)
+  .then(({ fileId }) => {
     console.log('上传成功, file_id:', fileId)
-  }
-})
+  })
+  .catch((err) => {
+    console.error('上传失败:', err)
+  })
 ```
