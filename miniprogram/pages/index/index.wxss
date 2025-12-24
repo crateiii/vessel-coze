@@ -1,0 +1,76 @@
+.container {
+  padding: 20rpx;
+}
+
+.card {
+  background: #ffffff;
+  border-radius: 16rpx;
+  padding: 20rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 6rpx 20rpx rgba(17, 24, 39, 0.06);
+}
+
+.label {
+  font-size: 28rpx;
+  color: #111827;
+  font-weight: 600;
+  margin-bottom: 12rpx;
+}
+
+.input {
+  width: 100%;
+  border: 2rpx solid #e5e7eb;
+  border-radius: 12rpx;
+  padding: 18rpx 16rpx;
+  box-sizing: border-box;
+  font-size: 28rpx;
+}
+
+.hint {
+  font-size: 24rpx;
+  color: #6b7280;
+  margin-top: 12rpx;
+}
+
+.row {
+  font-size: 28rpx;
+  margin-bottom: 10rpx;
+}
+
+.path {
+  font-size: 24rpx;
+  color: #374151;
+  word-break: break-all;
+  margin: 8rpx 0 16rpx;
+}
+
+.btnRow {
+  display: flex;
+  margin-bottom: 16rpx;
+}
+
+.btnRow button {
+  flex: 1;
+}
+
+.btnRow button + button {
+  margin-left: 16rpx;
+}
+
+.result {
+  margin-top: 16rpx;
+  border-top: 2rpx solid #f3f4f6;
+  padding-top: 16rpx;
+}
+
+.resultTitle {
+  font-size: 26rpx;
+  font-weight: 600;
+  margin-bottom: 8rpx;
+}
+
+.resultText {
+  font-size: 24rpx;
+  color: #111827;
+  word-break: break-all;
+}
