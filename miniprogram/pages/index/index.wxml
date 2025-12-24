@@ -1,0 +1,45 @@
+<view class="container">
+  <view class="card">
+    <view class="label">Access Token</view>
+    <input
+      class="input"
+      placeholder="粘贴 Coze Access Token（用于 Authorization: Bearer ...）"
+      value="{{accessToken}}"
+      bindinput="onAccessTokenInput"
+    />
+    <view class="hint">仅用于示例：你可以在页面里直接粘贴 Token，不会持久化保存。</view>
+  </view>
+
+  <view class="card">
+    <view class="row">状态：{{statusText}}</view>
+    <view class="row">录音时长：{{recordSeconds}}s</view>
+    <view class="path" wx:if="{{tempFilePath}}">文件：{{tempFilePath}}</view>
+
+    <view class="btnRow">
+      <button type="primary" disabled="{{isRecording}}" bindtap="startRecord">开始录音</button>
+      <button type="warn" disabled="{{!isRecording}}" bindtap="stopRecord">停止</button>
+    </view>
+
+    <view class="btnRow">
+      <button disabled="{{!tempFilePath}}" bindtap="playRecord">播放</button>
+      <button
+        type="primary"
+        disabled="{{!tempFilePath || !accessToken || uploading}}"
+        loading="{{uploading}}"
+        bindtap="uploadRecord"
+      >
+        上传
+      </button>
+    </view>
+
+    <view class="result" wx:if="{{uploadMessage}}">
+      <view class="resultTitle">上传响应</view>
+      <text selectable="true" class="resultText">{{uploadMessage}}</text>
+    </view>
+
+    <view class="result" wx:if="{{fileId}}">
+      <view class="resultTitle">file_id</view>
+      <text selectable="true" class="resultText">{{fileId}}</text>
+    </view>
+  </view>
+</view>
