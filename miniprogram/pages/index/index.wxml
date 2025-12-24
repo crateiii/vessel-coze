@@ -1,113 +1,135 @@
-<view class="container">
-  <!-- 背景装饰光效 -->
-  <view class="bg-decoration-top"></view>
-  <view class="bg-decoration-bottom"></view>
+<!-- 状态1: 未获取 API Key，显示授权页 -->
+<block wx:if="{{!hasApiKey}}">
+  <view class="auth-container">
+    <view class="auth-card">
+      <view class="auth-icon-placeholder">
+        <view class="auth-icon"></view>
+      </view>
+      <view class="auth-title">验证身份</view>
+      <view class="auth-desc">请输入您的 Coze Access Token 以继续使用语音助手服务。</view>
 
-  <!-- Token 输入 (保留原功能) -->
-  <view class="token-section">
-     <input
-        class="token-input"
-        placeholder="Enter Access Token"
-        placeholder-class="token-placeholder"
-        value="{{accessToken}}"
-        bindinput="onAccessTokenInput"
+      <input
+              class="auth-input"
+              placeholder="粘贴 Token 到此处"
+              placeholder-style="color: #d1d5db;"
+              bindinput="onTokenInput"
+              value="{{tempTokenInput}}"
       />
-  </view>
 
-  <!-- 核心内容区域 -->
-  <view class="main">
-    
-    <!-- 状态展示区 (时间 & 波纹) -->
-    <view class="status-display-area">
-      <!-- 时间显示 -->
-      <view class="time-display {{status === 'idle' ? 'idle' : ''}}">
-        {{timeDisplay}}
-      </view>
-      
-      <!-- 状态文字提示 -->
-      <view class="status-hint-text">
-        <text wx:if="{{status === 'recording'}}" class="recording-text">正在录音...</text>
-        <text wx:if="{{status === 'playing'}}" class="playing-text">正在播放...</text>
-        <text wx:if="{{status === 'uploading'}}" class="uploading-text">正在上传...</text>
-      </view>
-
-      <!-- 动态波纹可视化 -->
-      <view class="waveform {{ (status === 'recording' || status === 'playing') ? 'active' : '' }}">
-        <view class="wave-bar bar-1"></view>
-        <view class="wave-bar bar-2"></view>
-        <view class="wave-bar bar-3"></view>
-        <view class="wave-bar bar-4"></view>
-        <view class="wave-bar bar-5"></view>
-      </view>
-    </view>
-
-
-    <!-- 交互操作区 -->
-    <view class="interaction-area">
-      
-      <!-- 1. 初始状态 & 录音状态：显示大按钮 -->
-      <view wx:if="{{status === 'idle' || status === 'recording'}}"
-        class="mic-btn-wrapper"
-        bindtouchstart="handleTouchStart"
-        bindtouchend="handleTouchEnd"
-      >
-        <view class="mic-btn {{status === 'recording' ? 'recording' : ''}}">
-          <!-- 扩散波纹 -->
-          <view class="mic-pulse" wx:if="{{status === 'recording'}}"></view>
-          
-          <view class="mic-icon-svg">
-            <view class="mic-body"></view>
-            <view class="mic-bottom"></view>
-          </view>
-        </view>
-      </view>
-
-      <!-- 2. 预览状态：显示三个操作按钮 -->
-      <view wx:if="{{status === 'review' || status === 'playing' || status === 'uploading'}}" 
-        class="action-buttons-container {{status === 'uploading' ? 'uploading-active' : ''}}">
-        
-        <!-- 左侧：删除 -->
-        <view class="action-item {{status === 'uploading' ? 'disabled' : ''}}" bindtap="handleDelete">
-          <view class="action-circle secondary delete-btn">
-            <view class="icon-trash"></view>
-          </view>
-          <text class="action-label">重录</text>
-        </view>
-
-        <!-- 中间：播放/暂停 -->
-        <view class="action-item {{status === 'uploading' ? 'disabled' : ''}}" bindtap="handlePlay">
-          <view class="action-circle primary play-pause">
-            <view class="{{status === 'playing' ? 'icon-square' : 'icon-play'}}"></view>
-          </view>
-        </view>
-
-        <!-- 右侧：上传 -->
-        <view class="action-item {{status === 'uploading' ? 'disabled' : ''}}" bindtap="handleUpload">
-          <view class="action-circle secondary upload-btn">
-            <view wx:if="{{status === 'uploading'}}" class="icon-loader"></view>
-            <view wx:else class="icon-upload"></view>
-          </view>
-          <text class="action-label">上传</text>
-        </view>
-      </view>
-    </view>
-
-    <!-- 底部提示文本 -->
-    <view class="bottom-hint {{status === 'idle' ? 'visible' : ''}}">
-      长按开始录音
+      <button class="auth-btn" bindtap="saveToken">进入助手</button>
     </view>
   </view>
-
-  <!-- Toast 提示 -->
+  <!-- 同样包含 Toast，以防报错 -->
   <view wx:if="{{toast}}" class="toast-container">
     <view class="toast-box {{toast.type}}">
       <view wx:if="{{toast.type === 'success'}}" class="icon-check"></view>
       <text>{{toast.message}}</text>
     </view>
   </view>
+</block>
 
-  <!-- 底部 File ID 展示 (保留原功能，更小巧) -->
-  <view class="file-info-footer" wx:if="{{fileId}}">
-    <text>Last File ID: {{fileId}}</text>
+<!-- 状态2: 已有 Key，显示主功能页 -->
+<block wx:else>
+  <view class="container">
+    <!-- 背景装饰光效 -->
+    <view class="bg-decoration-top"></view>
+    <view class="bg-decoration-bottom"></view>
+
+    <!-- 顶部标题 (点击可退出登录) -->
+    <view class="header" bindtap="clearToken">
+      <text class="app-title">语音助手</text>
+    </view>
+
+    <!-- 核心内容区域 -->
+    <view class="main">
+
+      <!-- 状态展示区 (时间 & 波纹) -->
+      <view class="status-display-area">
+        <!-- 时间显示 -->
+        <view class="time-display {{status === 'idle' ? 'idle' : ''}}">
+          {{timeDisplay}}
+        </view>
+
+        <!-- 状态文字提示 -->
+        <view class="status-hint-text">
+          <text wx:if="{{status === 'recording'}}" class="recording-text">正在录音...</text>
+          <text wx:if="{{status === 'playing'}}" class="playing-text">正在播放...</text>
+          <text wx:if="{{status === 'uploading'}}" class="uploading-text">正在上传...</text>
+        </view>
+
+        <!-- 动态波纹可视化 -->
+        <view class="waveform {{ (status === 'recording' || status === 'playing') ? 'active' : '' }}">
+          <view class="wave-bar bar-1"></view>
+          <view class="wave-bar bar-2"></view>
+          <view class="wave-bar bar-3"></view>
+          <view class="wave-bar bar-4"></view>
+          <view class="wave-bar bar-5"></view>
+        </view>
+      </view>
+
+
+      <!-- 交互操作区 -->
+      <view class="interaction-area">
+
+        <!-- 1. 初始状态 & 录音状态：显示大按钮 -->
+        <view wx:if="{{status === 'idle' || status === 'recording'}}"
+              class="mic-btn-wrapper"
+              bindtouchstart="handleTouchStart"
+              bindtouchend="handleTouchEnd"
+        >
+          <view class="mic-btn {{status === 'recording' ? 'recording' : ''}}">
+            <!-- 扩散波纹 -->
+            <view class="mic-pulse" wx:if="{{status === 'recording'}}"></view>
+
+            <view class="mic-icon-svg">
+              <view class="mic-body"></view>
+              <view class="mic-bottom"></view>
+            </view>
+          </view>
+        </view>
+
+        <!-- 2. 预览状态：显示三个操作按钮 -->
+        <view wx:if="{{status === 'review' || status === 'playing' || status === 'uploading'}}"
+              class="action-buttons-container {{status === 'uploading' ? 'uploading-active' : ''}}">
+
+          <!-- 左侧：删除 -->
+          <view class="action-item {{status === 'uploading' ? 'disabled' : ''}}" bindtap="handleDelete">
+            <view class="action-circle secondary delete-btn">
+              <view class="icon-trash"></view>
+            </view>
+            <text class="action-label">重录</text>
+          </view>
+
+          <!-- 中间：播放/暂停 -->
+          <view class="action-item {{status === 'uploading' ? 'disabled' : ''}}" bindtap="handlePlay">
+            <view class="action-circle primary play-pause">
+              <view class="{{status === 'playing' ? 'icon-square' : 'icon-play'}}"></view>
+            </view>
+          </view>
+
+          <!-- 右侧：上传 -->
+          <view class="action-item {{status === 'uploading' ? 'disabled' : ''}}" bindtap="handleUpload">
+            <view class="action-circle secondary upload-btn">
+              <view wx:if="{{status === 'uploading'}}" class="icon-loader"></view>
+              <view wx:else class="icon-upload"></view>
+            </view>
+            <text class="action-label">上传</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 底部提示文本 -->
+      <view class="bottom-hint {{status === 'idle' ? 'visible' : ''}}">
+        长按开始录音
+      </view>
+    </view>
+
+    <!-- Toast 提示 -->
+    <view wx:if="{{toast}}" class="toast-container">
+      <view class="toast-box {{toast.type}}">
+        <view wx:if="{{toast.type === 'success'}}" class="icon-check"></view>
+        <text>{{toast.message}}</text>
+      </view>
+    </view>
   </view>
-</view>
+</block>

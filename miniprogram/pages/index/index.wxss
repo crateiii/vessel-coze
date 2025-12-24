@@ -1,4 +1,118 @@
-/* 基础页面设置 */
+/* ========================================= */
+/* 授权登录页样式 */
+/* ========================================= */
+.auth-container {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60rpx;
+  box-sizing: border-box;
+  background-color: #f3f4f6;
+}
+
+.auth-card {
+  width: 100%;
+  background: white;
+  padding: 80rpx 50rpx;
+  border-radius: 40rpx;
+  box-shadow: 0 20rpx 60rpx rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.auth-icon-placeholder {
+  width: 120rpx;
+  height: 120rpx;
+  background: linear-gradient(to bottom right, #34d399, #10b981);
+  border-radius: 30rpx;
+  margin-bottom: 40rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10rpx 20rpx rgba(16, 185, 129, 0.2);
+}
+
+.auth-icon {
+  width: 60rpx;
+  height: 60rpx;
+  border: 4rpx solid white;
+  border-radius: 50%;
+  position: relative;
+}
+.auth-icon::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 20rpx;
+  height: 20rpx;
+  background: white;
+  border-radius: 50%;
+}
+
+.auth-title {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 20rpx;
+  letter-spacing: 0.05em;
+}
+
+.auth-desc {
+  font-size: 26rpx;
+  color: #9ca3af;
+  text-align: center;
+  margin-bottom: 60rpx;
+  line-height: 1.6;
+}
+
+.auth-input {
+  width: 100%;
+  height: 100rpx;
+  background: #f9fafb;
+  border: 2rpx solid #e5e7eb;
+  border-radius: 20rpx;
+  padding: 0 30rpx;
+  font-size: 28rpx;
+  margin-bottom: 40rpx;
+  box-sizing: border-box;
+  text-align: center;
+  color: #374151;
+  transition: all 0.3s;
+}
+
+.auth-input:focus {
+  border-color: #34d399;
+  background: white;
+}
+
+.auth-btn {
+  width: 100% !important;
+  height: 100rpx;
+  border-radius: 50rpx;
+  background: linear-gradient(to right, #34d399, #10b981);
+  color: white;
+  font-weight: 500;
+  font-size: 32rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+  box-shadow: 0 10rpx 20rpx rgba(16, 185, 129, 0.2);
+  transition: transform 0.1s;
+}
+
+.auth-btn:active {
+  transform: scale(0.98);
+}
+
+/* ========================================= */
+/* 主功能页面设置 */
+/* ========================================= */
 page {
   background-color: #f3f4f6;
   font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -17,18 +131,18 @@ page {
   box-sizing: border-box;
 }
 
-/* 装饰背景 */
+/* 装饰背景 - 柔和的绿色光晕 */
 .bg-decoration-top {
   position: absolute;
   top: -100rpx;
   left: -100rpx;
   width: 500rpx;
   height: 500rpx;
-  background-color: #ecfdf5;
+  background-color: #ecfdf5; /* emerald-50 */
   border-radius: 50%;
   filter: blur(120rpx);
   z-index: 1;
-  opacity: 0.6;
+  opacity: 0.8;
 }
 
 .bg-decoration-bottom {
@@ -37,14 +151,14 @@ page {
   right: -100rpx;
   width: 500rpx;
   height: 500rpx;
-  background-color: #f0fdf4;
+  background-color: #f0fdf4; /* green-50 */
   border-radius: 50%;
   filter: blur(120rpx);
   z-index: 1;
-  opacity: 0.6;
+  opacity: 0.8;
 }
 
-/* 顶部 */
+/* 顶部标题 */
 .header {
   position: relative;
   width: 100%;
@@ -55,9 +169,9 @@ page {
 }
 
 .app-title {
-  font-size: 24rpx;
-  font-weight: 500;
-  letter-spacing: 0.2em;
+  font-size: 26rpx;
+  font-weight: 600;
+  letter-spacing: 0.1em;
   color: #9ca3af;
   text-transform: uppercase;
 }
@@ -81,21 +195,22 @@ page {
   justify-content: center;
   height: 400rpx;
   width: 100%;
-  margin-bottom: 80rpx;
+  margin-bottom: 60rpx;
 }
 
 .time-display {
-  font-size: 120rpx;
+  font-size: 110rpx;
   font-weight: 200;
   letter-spacing: -0.05em;
-  color: #1f2937;
+  color: #1f2937; /* gray-800 */
   transition: all 0.5s ease;
+  font-variant-numeric: tabular-nums; /* 等宽数字，防止跳动 */
 }
 
 .time-display.idle {
-  color: #d1d5db;
-  filter: blur(2rpx);
-  transform: scale(0.9);
+  color: #d1d5db; /* gray-300 */
+  filter: blur(1rpx);
+  transform: scale(0.95);
 }
 
 .status-hint-text {
@@ -103,11 +218,11 @@ page {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 10rpx;
+  margin-top: 16rpx;
 }
 
 .recording-text {
-  color: #10b981;
+  color: #10b981; /* emerald-500 */
   font-size: 28rpx;
   font-weight: 500;
   letter-spacing: 0.1em;
@@ -131,8 +246,8 @@ page {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12rpx;
-  height: 100rpx;
+  gap: 8rpx;
+  height: 80rpx;
   margin-top: 40rpx;
   transition: opacity 0.3s;
   opacity: 0;
@@ -161,11 +276,11 @@ page {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 250rpx;
+  height: 300rpx; /* 增加高度给按钮组 */
   position: relative;
 }
 
-/* 录音按钮 */
+/* 录音大按钮 (Idle/Recording) */
 .mic-btn-wrapper {
   display: flex;
   align-items: center;
@@ -181,7 +296,7 @@ page {
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 10rpx 40rpx rgba(16, 185, 129, 0.2);
+  box-shadow: 0 10rpx 40rpx rgba(16, 185, 129, 0.3); /* 增强阴影 */
   transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
@@ -189,7 +304,7 @@ page {
   width: 190rpx;
   height: 190rpx;
   background: #10b981;
-  box-shadow: 0 0 60rpx rgba(16, 185, 129, 0.4);
+  box-shadow: 0 0 60rpx rgba(16, 185, 129, 0.5);
 }
 
 .mic-pulse {
@@ -199,7 +314,7 @@ page {
   right: 0;
   bottom: 0;
   border-radius: 50%;
-  border: 2rpx solid #34d399;
+  border: 4rpx solid #34d399;
   animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
 }
 
@@ -210,166 +325,213 @@ page {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
 }
 
 .mic-body {
-  width: 24rpx;
-  height: 44rpx;
+  width: 22rpx;
+  height: 40rpx;
   background: white;
   border-radius: 100rpx;
   position: relative;
+  z-index: 2;
 }
 
 .mic-bottom {
-  width: 40rpx;
-  height: 20rpx;
+  width: 36rpx;
+  height: 18rpx;
   border: 4rpx solid white;
   border-top: 0;
   border-bottom-left-radius: 100rpx;
   border-bottom-right-radius: 100rpx;
-  margin-top: 4rpx;
+  margin-top: -10rpx; /* 调整位置 */
+  z-index: 1;
 }
 
-/* 操作按钮 */
+/* ========================================= */
+/* 核心修复：操作按钮组对齐 */
+/* ========================================= */
 .action-buttons-container {
   display: flex;
-  align-items: center;
+  flex-direction: row;
   justify-content: space-between;
+  /* 关键：使用 flex-start 以便手动控制垂直偏移 */
+  align-items: flex-start;
   width: 100%;
-  max-width: 560rpx;
-  animation: slide-up 0.5s ease-out;
+  max-width: 580rpx;
+  padding: 0 30rpx;
+  box-sizing: border-box;
+  animation: slide-up 0.4s ease-out;
 }
 
 .action-item {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12rpx;
+  gap: 16rpx;
+}
+
+/* 严丝合缝对齐计算：
+   中间按钮直径: 160rpx
+   两边按钮直径: 110rpx
+   半径差: (160 - 110) / 2 = 25rpx
+   给两边按钮增加 25rpx 的顶部边距，即可让圆心完美水平对齐
+*/
+.action-item:nth-child(1),
+.action-item:nth-child(3) {
+  margin-top: 25rpx;
 }
 
 .action-item.disabled {
-  opacity: 0.4;
+  opacity: 0.5;
   pointer-events: none;
 }
 
+/* 按钮基础圆形 */
 .action-circle {
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s;
+  transition: transform 0.2s;
 }
 
-/* 修复点：将 to tr 改为 to top right */
+.action-circle:active {
+  transform: scale(0.92);
+}
+
+/* 中间主按钮 (播放) - 160rpx */
 .action-circle.primary {
-  width: 150rpx;
-  height: 150rpx;
-  background: linear-gradient(to top right, #34d399, #10b981);
-  box-shadow: 0 10rpx 30rpx rgba(16, 185, 129, 0.2);
+  width: 160rpx;
+  height: 160rpx;
+  /* 严格匹配原型渐变: emerald-400 -> green-500 */
+  background: linear-gradient(to top right, #34d399, #22c55e);
+  box-shadow: 0 12rpx 36rpx rgba(34, 197, 94, 0.3);
 }
 
+/* 两侧次级按钮 - 110rpx */
 .action-circle.secondary {
   width: 110rpx;
   height: 110rpx;
   background: white;
-  border: 1rpx solid #e5e7eb;
-  box-shadow: 0 4rpx 10rpx rgba(0, 0, 0, 0.05);
-}
-
-.action-circle:active {
-  transform: scale(0.9);
+  /* 极细边框和柔和阴影 */
+  border: 2rpx solid #f3f4f6;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.03);
 }
 
 .action-label {
   font-size: 24rpx;
   color: #9ca3af;
   font-weight: 500;
+  letter-spacing: 0.05em;
 }
 
-/* 图标绘制 */
+/* ========================================= */
+/* CSS 图标精修 (仿 Lucide 风格) */
+/* ========================================= */
+
+/* 1. 垃圾桶 (Trash) */
 .icon-trash {
-  width: 28rpx;
-  height: 32rpx;
-  border: 3rpx solid #6b7280;
-  border-bottom-left-radius: 4rpx;
-  border-bottom-right-radius: 4rpx;
+  width: 32rpx;
+  height: 36rpx;
+  border: 3rpx solid #6b7280; /* text-gray-500 */
+  border-top: none;
+  border-bottom-left-radius: 6rpx;
+  border-bottom-right-radius: 6rpx;
   position: relative;
   margin-top: 8rpx;
 }
+/* 盖子 */
 .icon-trash::before {
   content: '';
   position: absolute;
-  top: -8rpx;
+  top: -6rpx;
   left: -6rpx;
-  width: 40rpx;
+  width: 44rpx;
   height: 3rpx;
   background: #6b7280;
+  border-radius: 2rpx;
 }
+/* 内部竖线 (用阴影模拟) */
 .icon-trash::after {
   content: '';
   position: absolute;
   top: 6rpx;
-  left: 8rpx;
+  left: 9rpx;
   width: 3rpx;
   height: 16rpx;
   background: #6b7280;
-  box-shadow: 8rpx 0 #6b7280;
+  box-shadow: 9rpx 0 #6b7280; /* 第二条竖线 */
 }
 
+/* 2. 播放 (Play) */
 .icon-play {
   width: 0;
   height: 0;
-  border-top: 20rpx solid transparent;
-  border-bottom: 20rpx solid transparent;
-  border-left: 35rpx solid white;
-  margin-left: 8rpx;
+  border-style: solid;
+  border-width: 22rpx 0 22rpx 36rpx;
+  border-color: transparent transparent transparent white;
+  margin-left: 8rpx; /* 视觉修正居中 */
+  border-radius: 4rpx; /* 微微圆角 */
 }
 
+/* 3. 停止 (Square) */
 .icon-square {
-  width: 30rpx;
-  height: 30rpx;
+  width: 32rpx;
+  height: 32rpx;
   background: white;
-  border-radius: 4rpx;
+  border-radius: 6rpx;
 }
 
+/* 4. 上传 (Cloud/Upload Arrow) - 仿 Lucide UploadCloud */
 .icon-upload {
-  width: 40rpx;
+  width: 44rpx;
   height: 30rpx;
-  border: 3rpx solid #6b7280;
-  border-bottom: 0;
+  border-bottom: 3rpx solid #6b7280;
   position: relative;
-  margin-top: 10rpx;
+  margin-top: 4rpx;
+  /* 底部两边的小竖线 */
+  border-left: 3rpx solid #6b7280;
+  border-right: 3rpx solid #6b7280;
+  border-bottom-left-radius: 6rpx;
+  border-bottom-right-radius: 6rpx;
 }
+/* 箭头杆 */
 .icon-upload::before {
   content: '';
   position: absolute;
-  top: -12rpx;
-  left: 17rpx;
+  top: -12rpx; /* 向上伸出 */
+  left: 50%;
+  transform: translateX(-50%);
   width: 3rpx;
-  height: 20rpx;
+  height: 24rpx;
   background: #6b7280;
 }
+/* 箭头尖 */
 .icon-upload::after {
   content: '';
   position: absolute;
-  top: -12rpx;
-  left: 10rpx;
+  top: -16rpx;
+  left: 50%;
+  transform: translateX(-50%) rotate(45deg);
   width: 14rpx;
   height: 14rpx;
   border-top: 3rpx solid #6b7280;
   border-left: 3rpx solid #6b7280;
-  transform: rotate(45deg);
+  margin-left: -1rpx; /* 微调 */
 }
 
+/* Loading 圈 */
 .icon-loader {
   width: 36rpx;
   height: 36rpx;
-  border: 3rpx solid #10b981;
-  border-top-color: transparent;
+  border: 4rpx solid #e5e7eb;
+  border-top-color: #10b981;
   border-radius: 50%;
-  animation: spin 1s linear infinite;
+  animation: spin 0.8s linear infinite;
 }
 
+/* 底部提示 */
 .bottom-hint {
   position: absolute;
   bottom: 100rpx;
@@ -385,6 +547,7 @@ page {
   opacity: 1;
 }
 
+/* Toast */
 .toast-container {
   position: absolute;
   top: 180rpx;
@@ -400,7 +563,7 @@ page {
   background: white;
   padding: 20rpx 40rpx;
   border-radius: 100rpx;
-  box-shadow: 0 10rpx 30rpx rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10rpx 30rpx rgba(0, 0, 0, 0.08);
   display: flex;
   align-items: center;
   gap: 12rpx;
@@ -424,14 +587,15 @@ page {
 }
 
 .icon-check {
-  width: 20rpx;
+  width: 18rpx;
   height: 10rpx;
-  border-left: 3rpx solid #059669;
-  border-bottom: 3rpx solid #059669;
+  border-left: 4rpx solid #059669;
+  border-bottom: 4rpx solid #059669;
   transform: rotate(-45deg);
   margin-top: -4rpx;
 }
 
+/* 底部 File ID */
 .file-info-footer {
   position: absolute;
   bottom: 20rpx;
@@ -442,7 +606,7 @@ page {
 }
 
 /* ========================================= */
-/* 动画 Keyframes 定义 */
+/* 动画 Keyframes 定义 (放在文件最底部) */
 /* ========================================= */
 
 @keyframes pulse-opacity {
