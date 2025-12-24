@@ -2,12 +2,30 @@
   "miniprogramRoot": "miniprogram/",
   "compileType": "miniprogram",
   "projectname": "wxmp-voice-record-upload",
-  "appid": "touristappid",
+  "appid": "wxc5f22c318299e26f",
   "setting": {
     "urlCheck": false,
     "es6": true,
     "enhance": true,
     "postcss": true,
-    "minified": true
-  }
+    "minified": true,
+    "babelSetting": {
+      "ignore": [],
+      "disablePlugins": [],
+      "outputPath": ""
+    },
+    "condition": false
+  },
+  "libVersion": "3.13.0",
+  "srcMiniprogramRoot": "miniprogram/",
+  "packOptions": {
+    "ignore": [],
+    "include": []
+  },
+  "condition": {},
+  "editorSetting": {
+    "tabIndent": "insertSpaces",
+    "tabSize": 2
+  },
+  "simulatorPluginLibVersion": {}
 }
