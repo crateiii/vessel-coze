@@ -1,45 +1,61 @@
 <view class="container">
-  <view class="card">
-    <view class="label">Access Token</view>
-    <input
-      class="input"
-      placeholder="粘贴 Coze Access Token（用于 Authorization: Bearer ...）"
-      value="{{accessToken}}"
-      bindinput="onAccessTokenInput"
-    />
-    <view class="hint">仅用于示例：你可以在页面里直接粘贴 Token，不会持久化保存。</view>
+  <view class="header">
+    <view class="token-input-wrapper">
+      <input
+        class="token-input"
+        placeholder="Enter Access Token"
+        placeholder-class="token-placeholder"
+        value="{{accessToken}}"
+        bindinput="onAccessTokenInput"
+      />
+    </view>
   </view>
 
-  <view class="card">
-    <view class="row">状态：{{statusText}}</view>
-    <view class="row">录音时长：{{recordSeconds}}s</view>
-    <view class="path" wx:if="{{tempFilePath}}">文件：{{tempFilePath}}</view>
-
-    <view class="btnRow">
-      <button type="primary" disabled="{{isRecording}}" bindtap="startRecord">开始录音</button>
-      <button type="warn" disabled="{{!isRecording}}" bindtap="stopRecord">停止</button>
+  <view class="main">
+    <view class="status-box">
+      <text class="status-text">{{statusText}}</text>
+      <text class="timer" wx:if="{{isRecording || tempFilePath}}">{{recordSeconds}}s</text>
     </view>
 
-    <view class="btnRow">
-      <button disabled="{{!tempFilePath}}" bindtap="playRecord">播放</button>
-      <button
-        type="primary"
-        disabled="{{!tempFilePath || !accessToken || uploading}}"
-        loading="{{uploading}}"
-        bindtap="uploadRecord"
+    <view class="record-container" wx:if="{{!tempFilePath}}">
+      <view 
+        class="mic-btn {{isRecording ? 'active' : ''}}"
+        bindtouchstart="handleTouchStart"
+        bindtouchend="handleTouchEnd"
       >
-        上传
-      </button>
+        <view class="mic-icon">
+          <view class="mic-body"></view>
+          <view class="mic-bottom"></view>
+        </view>
+        <view class="pulse" wx:if="{{isRecording}}"></view>
+      </view>
+      <text class="hint">{{isRecording ? 'Release to stop' : 'Hold to record'}}</text>
     </view>
 
-    <view class="result" wx:if="{{uploadMessage}}">
-      <view class="resultTitle">上传响应</view>
-      <text selectable="true" class="resultText">{{uploadMessage}}</text>
+    <view class="action-container" wx:if="{{tempFilePath && !uploading}}">
+      <view class="action-group">
+        <view class="circle-btn play" bindtap="playRecord">
+          <view class="play-icon"></view>
+          <text>播放</text>
+        </view>
+        <view class="circle-btn upload" bindtap="uploadRecord">
+          <view class="upload-icon"></view>
+          <text>上传</text>
+        </view>
+        <view class="circle-btn delete" bindtap="deleteRecord">
+          <view class="delete-icon"></view>
+          <text>删除</text>
+        </view>
+      </view>
     </view>
 
-    <view class="result" wx:if="{{fileId}}">
-      <view class="resultTitle">file_id</view>
-      <text selectable="true" class="resultText">{{fileId}}</text>
+    <view class="uploading-box" wx:if="{{uploading}}">
+      <view class="spinner"></view>
+      <text>Uploading...</text>
     </view>
+  </view>
+
+  <view class="footer" wx:if="{{fileId}}">
+    <text class="file-id">Last File ID: {{fileId}}</text>
   </view>
 </view>
